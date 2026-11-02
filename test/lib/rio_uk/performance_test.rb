@@ -29,7 +29,7 @@ class RioUk::PerformanceTest < Minitest::Test
   end
 
   def test_at_defaults_to_two_weeks_from_today
-    performances = TZInfo::Timezone.get('Europe/London').stub(:now, Time.utc(2026, 11, 1, 12)) do
+    performances = Time.stub(:now, Time.utc(2026, 11, 1, 12)) do
       RioUk::Performance.at('rio')
     end
 
