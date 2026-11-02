@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.1] - 2026-11-02
+
+### Changed
+- Requests and London times use cinebase 5.8's `Cinebase::Http` and `Cinebase::London`.
+- HTTP errors read "HTTP error 500 from riocinema.org.uk" instead of "Rio Cinema HTTP error 500".
+
+### Removed
+- `RioUk::Performance::TIME_ZONE`, now unused.
+
 ## [1.0.0] - 2026-11-02
 
 The first release, as 1.0.0.

@@ -33,7 +33,6 @@ module RioUk
         YES = 'Y'
         THREE_D = /\b3D\b/i
         YEAR = /\A\d{4}\z/
-        TIME_ZONE = 'Europe/London'
 
         # @param [Hash] event one of the website's Savoy events
         def initialize(event)
@@ -101,7 +100,7 @@ module RioUk
         def starting_at(performance, date)
           hour, minute = performance.fetch('StartTime').unpack('a2a2').map(&:to_i)
           local = Time.utc(date.year, date.month, date.day, hour, minute)
-          TZInfo::Timezone.get(TIME_ZONE).local_to_utc(local) { |periods| periods.first }.utc
+          Cinebase::London.utc(local)
         end
 
         def strands

@@ -27,29 +27,14 @@ class RioUk::Internal::WebsiteTest < Minitest::Test
     stub_request(:get, WHATS_ON).to_return(status: 500, body: 'secret')
 
     error = assert_raises(RuntimeError) { RioUk::Internal::Website.new.events }
-    assert_equal 'Rio Cinema HTTP error 500', error.message
-  end
-
-  def test_redirects_are_not_followed
-    stub_request(:get, WHATS_ON).to_return(status: 301, headers: { 'Location' => 'https://riocinema.org.uk/' })
-
-    assert_raises(RuntimeError) { RioUk::Internal::Website.new.events }
+    assert_equal 'HTTP error 500 from riocinema.org.uk', error.message
   end
 
   def test_transient_errors_are_retried
     stub_request(:get, WHATS_ON).to_raise(Errno::ECONNRESET).then.to_return(status: 200, body: whats_on_html)
-    website = RioUk::Internal::Website.new
 
-    website.stub(:sleep, nil) { website.events }
+    Cinebase::Http.stub(:pause, nil) { RioUk::Internal::Website.new.events }
 
     assert_requested :get, WHATS_ON, times: 2
-  end
-
-  def test_transient_errors_are_raised_after_retries
-    stub_request(:get, WHATS_ON).to_raise(Net::OpenTimeout)
-    website = RioUk::Internal::Website.new
-
-    assert_raises(Net::OpenTimeout) { website.stub(:sleep, nil) { website.events } }
-    assert_requested :get, WHATS_ON, times: 3
   end
 end

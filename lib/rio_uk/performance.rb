@@ -23,8 +23,6 @@ module RioUk
     #   @option options [Integer] :film_year (nil) year of the film
     #   @option options [Time] :starting_at listed start time of the performance
 
-    TIME_ZONE = 'Europe/London'.freeze
-
     # Performances within an inclusive range of showing dates, from one
     # request: the what's on page holds every advertised date.
     # @param [String] cinema_id the cinema's id, 'rio'
@@ -33,7 +31,7 @@ module RioUk
     # @return [Array<RioUk::Performance>]
     def self.at(
       cinema_id,
-      from: TZInfo::Timezone.get(TIME_ZONE).now.to_date,
+      from: Cinebase::London.today,
       to: from + 13
     )
       raise ArgumentError, 'to must not precede from' if to < from
