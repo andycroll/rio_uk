@@ -66,6 +66,7 @@ module RioUk
             film_name: film_name,
             film_year: film_year,
             starting_at: starting_at,
+            title: title,
             variant: variant(performance)
           }
         end
