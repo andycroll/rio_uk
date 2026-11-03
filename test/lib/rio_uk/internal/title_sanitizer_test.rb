@@ -48,6 +48,10 @@ class RioUk::Internal::TitleSanitizerTest < Minitest::Test
     assert_sanitized 'We, the Hated', 'WE, THE HATED (Just Stop Oil doc) + Q&A'
   end
 
+  def test_restorations_go
+    assert_sanitized 'The Devils', 'THE DEVILS (4K Restoration)'
+  end
+
   def test_q_and_a_goes
     assert_sanitized 'A Tribute to Mohammad Bakri', 'London Palestine Film Festival: A TRIBUTE TO MOHAMMAD BAKRI + Q&A'
   end

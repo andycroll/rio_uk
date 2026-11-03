@@ -36,9 +36,9 @@ module RioUk
         @sanitized ||= begin
           listed = without_director(title.squeeze(' ').strip)
           event_cinema = listed[EVENT_CINEMA].to_s
-          film = without_strand(listed.delete_prefix(event_cinema))
+          film = without_labels(without_strand(listed.delete_prefix(event_cinema)))
           film = titlecase(leading_capitals(film)) if capitals?(film)
-          film = remove.reduce(event_cinema + film) { |text, pattern| text.gsub(pattern, '') }
+          film = without_labels(event_cinema + film)
           replace.reduce(film) { |text, (pattern, prefix)| text.gsub(pattern) { prefix + $1 } }.squeeze(' ').strip
         end
       end
@@ -57,6 +57,12 @@ module RioUk
           /\ARBO (?:Cinema Season )?20\d{2}-\d{2}:\s*(.*)/i      => 'Royal Ballet and Opera: ',
           /\AExhibition on Screen:\s*(.*)/i                      => 'Exhibition on Screen: '
         }.merge(COMMON_REPLACE)
+      end
+
+      # Before the case check too, as a mixed case label such as
+      # '(4K Restoration)' would otherwise be cut in half with the extras
+      def without_labels(text)
+        remove.reduce(text) { |stripped, pattern| stripped.gsub(pattern, '') }
       end
 
       def capitals?(text)

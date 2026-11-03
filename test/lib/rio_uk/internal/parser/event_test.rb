@@ -87,6 +87,16 @@ class RioUk::Internal::Parser::EventTest < Minitest::Test
     assert_equal 'I Love Boosters', carers.performances(DATES).first[:film_name]
   end
 
+  def test_performances_read_labels_and_series_from_the_title
+    relaxed = performance_for_title('Relaxed Screening: FATHERLAND')
+    hamlet = performance_for_title('NT Live: HAMLET')
+
+    assert_equal 'Fatherland', relaxed.film_name
+    assert_equal %w(relaxed), relaxed.variant
+    assert_equal 'Hamlet', hamlet.film_name
+    assert_equal 'National Theatre Live', hamlet.event.name
+  end
+
   def test_no_festival
     assert_nil attributes[:festival]
   end
@@ -99,6 +109,10 @@ class RioUk::Internal::Parser::EventTest < Minitest::Test
 
   def attributes_for_title(title)
     event('Title' => title).performances(DATES).first
+  end
+
+  def performance_for_title(title)
+    RioUk::Performance.new(attributes_for_title(title).merge(cinema_id: 'rio', cinema_name: 'Rio Cinema'))
   end
 
   def event(changes = {})
